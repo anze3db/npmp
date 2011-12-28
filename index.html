@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>AVTOMATSKO GENERIRANJE MATLAB /OCTAVE SIMULACIJSKE KODE</title>
-    <meta name="description" content="">
+    <title>Avtomatsko generiranje Matlab/Octave simulacijske kode</title>
+    <meta name="description" content="Avtomatsko generiranje Matlab/Octave simulacijske kode">
     <meta name="author" content="">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
@@ -20,11 +20,10 @@
   </head>
 
   <body>
-
     <div class="topbar">
       <div class="fill">
         <div class="container">
-          <a class="brand" href="#">Avtomatsko generiranje Matlab/Octave simulacijske kode</a>
+          <a class="brand" href="#">Generiranje simulacijske kode</a>
           <!--  
           <ul class="nav">
             <li class="active"><a href="#">Home</a></li>
@@ -44,28 +43,35 @@
         </div>
         <div class="row">
           <div class="span10">
-            <h2>Koeficienti</h2>
+            <h2>[TODO]</h2>
           </div>
           <div class="span4">
-            <h3>Shrani</h3>
-            <input type="text" id="file-name" size="30" placeholder="file name">.json <input type="submit" class="btn primary" value="Shrani" id="save">
-            <h3>Naloži</h3>
-            <div id="drop_zone" class="inactive">Drop files here</div>
+            <h3>Simulacijska koda</h3>
+            <p>
+            <input type="text" id="output-source" size="30" class="side-field" placeholder="file name">.m <input type="submit" class="btn primary" value="Generiraj" id="generate">
+			</p>
+            <h3>Model</h3>
+            <h4>Izvozi</h4>
+            <input type="text" id="output-model" size="30" class="side-field" placeholder="file name">.json <input type="submit" class="btn primary" value="Shrani" id="save">
+           	<h4>Uvozi</h4>
+            <div id="drop-zone" class="inactive">Sem spustite datoteko</div>
 			<output id="list"></output>
           </div>
         </div>
       </div>
 
       <footer>
-        <p>&copy; Company 2011</p>
+
       </footer>
 
     </div> <!-- /container -->
+    <!-- Le javascript -->
 	<script type="text/javascript" src="js/lib/jquery-1.7.min.js"></script>
 	<script type="text/javascript" src="js/lib/chosen/chosen/chosen.jquery.min.js"></script>
 	<script type="text/javascript" src="js/lib/jquery-ui-1.8.16.custom.min.js"></script>
 	<script type="text/javascript" src="js/lib/FileSaver.min.js"></script>
 	<script type="text/javascript" src="js/lib/BlobBuilder.min.js"></script>
+	<script type="text/javascript" src="js/lib/json2.js"></script>
 	<script type="text/javascript" src="js/functions.js"></script>
 	<script type="text/javascript" src="js/init.js"></script>
   </body>
