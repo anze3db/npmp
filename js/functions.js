@@ -10,6 +10,22 @@ function handleFileSelect(e) {
       output.push('<li><strong>', f.name, '</strong> (', f.type || 'n/a', ') - ',
                   f.size, ' bytes, last modified: ',
                   f.lastModifiedDate.toLocaleDateString(), '</li>');
+      
+      var reader = new FileReader();
+      // If we use onloadend, we need to check the readyState.
+      reader.onloadend = function(evt) {
+        if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+          data = JSON.parse(evt.target.result);
+          console.log(data);
+        }
+      };
+      reader.onerror = function(evt) {
+    	  $(".alert-message").show();
+      };
+      
+      reader.readAsText(f);
+      
+      
     }
     document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
     $(e.target).addClass('inactive');

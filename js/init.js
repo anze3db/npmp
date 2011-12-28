@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+	$(".alert-message").alert();
+	
     $('#save').click(saveModel);
     
     $('#generate').click(generate);

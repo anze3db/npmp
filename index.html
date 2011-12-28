@@ -20,6 +20,7 @@
   </head>
 
   <body>
+
     <div class="topbar">
       <div class="fill">
         <div class="container">
@@ -55,6 +56,10 @@
             <input type="text" id="output-model" size="30" class="side-field" placeholder="file name">.json <input type="submit" class="btn primary" value="Shrani" id="save">
            	<h4>Uvozi</h4>
             <div id="drop-zone" class="inactive">Sem spustite datoteko</div>
+          	<div class="alert-message error">
+			<a class="close" href="#">×</a>
+			<p><strong>Napaka</strong> pri branju datoteke (index.html mora biti odprt preko http:// in ne file://)</p>
+			</div>
 			<output id="list"></output>
           </div>
         </div>
@@ -71,6 +76,7 @@
 	<script type="text/javascript" src="js/lib/jquery-ui-1.8.16.custom.min.js"></script>
 	<script type="text/javascript" src="js/lib/FileSaver.min.js"></script>
 	<script type="text/javascript" src="js/lib/BlobBuilder.min.js"></script>
+	<script type="text/javascript" src="js/lib/bootstrap-alerts.js"></script>
 	<script type="text/javascript" src="js/lib/json2.js"></script>
 	<script type="text/javascript" src="js/functions.js"></script>
 	<script type="text/javascript" src="js/init.js"></script>

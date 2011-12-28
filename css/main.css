@@ -59,6 +59,11 @@ h4{
 	line-height:30px;
 }
 
+.alert-message{
+	margin:10px 0px;
+	display: none;
+}
+
 #drop-zone {
 	border: 2px dashed;
 	text-align:center;
