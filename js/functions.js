@@ -15,11 +15,17 @@ function handleFileSelect(e) {
       // If we use onloadend, we need to check the readyState.
       reader.onloadend = function(evt) {
         if (evt.target.readyState == FileReader.DONE) { // DONE == 2
-          data = JSON.parse(evt.target.result);
-          console.log(data);
+			try {
+				data = JSON.parse(evt.target.result);			
+			} catch (e) {
+				$(".alert-message").find('p').html(e.toString());
+				$(".alert-message").show();
+			}
+
         }
       };
       reader.onerror = function(evt) {
+    	  $(".alert-message").find('p').html("<strong>Napaka</strong> pri branju datoteke (index.html mora biti odprt preko http:// in ne file://)");
     	  $(".alert-message").show();
       };
       
