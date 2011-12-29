@@ -12,7 +12,8 @@ function handleFileSelect(e) {
 		reader.onloadend = function(evt) {
 			if (evt.target.readyState == FileReader.DONE) { // DONE == 2
 				try {
-					data = JSON.parse(evt.target.result);
+					var data = JSON.parse(evt.target.result);
+					updateForm(data);
 				} catch (e) {
 					$(".alert-message").find('p').html(e.toString());
 					$(".alert-message").show();
@@ -36,27 +37,26 @@ function handleDragOver(e) {
 
 	e.stopPropagation();
 	e.preventDefault();
-	e.originalEvent.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+	e.originalEvent.dataTransfer.dropEffect = 'copy'; // Explicitly show this
+														// is a copy.
 }
 
 function saveModel(e) {
-	// TODO: replace placeHolder with actual data
-	var placeHolder = {
-		neki : "aaa",
-		bla : [ 1, 2, 3 ],
-		mu : {
-			neki2 : "aa",
-			ff : [ 444, 4443 ]
-		}
-	};
-	var str = JSON.stringify(placeHolder);
+	data = {};
+	$("#form").find(':input').each(function(i, e) {
+
+		data[e.name] = e.value;
+	});
+	data['name'] = $("#output-model").val();
+	console.log(data);
+	var str = JSON.stringify(data);
 	var bb = new BlobBuilder;
 	bb.append(str);
 	saveAs(bb.getBlob("text/plain;charset=utf-8"), $('#output-model').val() + '.json');
 }
 
 function generate() {
-	// TODO: Write a real file 
+	// TODO: Write a real file
 	var bb = new BlobBuilder;
 	bb.append("Hello, world!");
 	saveAs(bb.getBlob("text/plain;charset=utf-8"), $('#output-source').val() + '.m');
@@ -92,4 +92,13 @@ function showModal(title, body, primary_callback) {
 		$('#modal').modal('hide');
 	});
 	$('#modal').modal('show');
+}
+function updateForm(data) {
+	$('#form').find(':input').each(function(i, e) {
+
+		e.value = data[e.name];
+	});
+
+	$('#name').text(data['name']);
+	$('.side-field').val(data['name']);
 }
