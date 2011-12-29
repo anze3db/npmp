@@ -37,7 +37,6 @@ function handleFileSelect(e) {
       
       
     }
-    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
     $(e.target).addClass('inactive');
   }
 
@@ -92,6 +91,5 @@ function showModal(title, body, primary_callback){
 	$($('#modal').find('.modal-footer').children()[1]).unbind().click(function(){
 		$('#modal').modal('hide');
 	});
-
-	$('#modal').modal('toggle');
+	$('#modal').modal('show');
 }
