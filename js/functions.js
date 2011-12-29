@@ -25,9 +25,6 @@ function handleFileSelect(e) {
 			$(".alert-message").find('p').html("<strong>Napaka</strong> pri branju datoteke (index.html mora biti odprt preko http:// in ne file://)");
 			$(".alert-message").show();
 		};
-		var name = f.name.substring(0, f.name.lastIndexOf('.'));
-		$('#name').text(name);
-		$('.side-field').not(this).val(name);
 		reader.readAsText(f);
 	}
 	$(e.target).addClass('inactive');
