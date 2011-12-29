@@ -35,7 +35,7 @@ function handleDragOver(e) {
 	e.stopPropagation();
 	e.preventDefault();
 	e.originalEvent.dataTransfer.dropEffect = 'copy'; // Explicitly show this
-														// is a copy.
+	// is a copy.
 }
 
 function saveModel(e) {
@@ -47,22 +47,83 @@ function saveModel(e) {
 	saveAs(bb.getBlob("text/plain;charset=utf-8"), $('#output-model').val() + '.json');
 }
 
-function getFormData(){
+function getFormData() {
 	var data = {};
 	$("#form").find(':input').each(function(i, e) {
-
 		data[e.name] = e.value;
 	});
+	console.log(data);
 	data['name'] = $("#output-model").val();
 	return data;
 }
 
 function generate() {
-	
-	var source = $( "#m_source" ).render(getFormData());
+	var data = getFormData();
+	// Transform the data as needed in the .m file:
+	var gData = {};
+	gData.input_v = data.input_v;
+
+	gData.k = [];
+	var cnt = 1;
+	for ( var i in data) {
+		if (i.indexOf('input_k') == 0) { // index starts with input_k
+			gData.k.push({
+				id : cnt++,
+				value : data[i]
+			});
+		} else if (i == 'input_reactions') {
+			gData.reactions = parseReactions(data[i]);
+		}
+	}
+
+	var source = $("#m_source").render(gData);
 	var bb = new BlobBuilder;
 	bb.append(source);
 	saveAs(bb.getBlob("text/plain;charset=utf-8"), $('#output-source').val() + '.m');
+}
+
+function parseReactions(reactions) {
+
+	var res = [];
+	var reactants = $('#input_reactants').val().replace(/, /g, ' ').replace(/,/g, ' ').split(' ');
+
+	var line = reactions.split('\n');
+	for ( var i in line) {
+		var e = line[i].replace(/ /g, '');
+		e = e.split('->');
+		var r = e[0];
+		var p = e[1];
+		var l = $('<div/>').html(line[i]).text();
+		res.push({
+			id : parseInt(i) + 1,
+			r : parseReactionsLine(r, reactants),
+			p : parseReactionsLine(p, reactants),
+			line : l
+		});
+	}
+	return res;
+}
+
+function parseReactionsLine(r, reactants) {
+	// reset the counters:
+	var counters = {};
+	for ( var j in reactants) {
+		counters[reactants[j]] = 0;
+	}
+
+	r = r.split('+');
+	// Count the number of occurrences:
+	for ( var j in r) {
+		// TODO: Handle x(y)
+		counters[r[j]]++;
+	}
+
+	var str = "[";
+	for ( var j in reactants) {
+		str += counters[reactants[j]] + ",";
+	}
+	str += "]";
+	return str;
 }
 
 function updateName(e) {
@@ -97,10 +158,39 @@ function showModal(title, body, primary_callback) {
 	$('#modal').modal('show');
 }
 function updateForm(data) {
-	$('#form').find(':input').each(function(i, e) {
-		e.value = data[e.name];
-	});
+
+	for ( var i in data) {
+		var e = data[i];
+		$('#form').find("#" + i).val(e);
+		if (i == 'input_reactions')
+			updateReactions();
+	}
 
 	$('#name').text(data['name']);
 	$('.side-field').val(data['name']);
+}
+
+function updateReactions() {
+
+	var reactions = [];
+	var val = $('#input_reactions').val();
+	var r = val.split('\n');
+	if (val == "")
+		r = [];
+	// TODO: k fields tend to get mixed up when removing a middle reaction, fix
+	// it.
+	for ( var i in r) {
+		console.log("#input_k" + parseInt(i) + 1);
+		var value = $("#input_k" + (parseInt(i) + 1)).val() || "";
+		reactions.push({
+			id : parseInt(i) + 1,
+			description : r[i],
+			value : value
+		});
+	}
+	var html = $("#k_fields_source").render({
+		reactions : reactions
+	});
+	$("#k_fields").html(html);
+
 }

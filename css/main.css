@@ -53,6 +53,10 @@ body {
 }
 #name {
 	height:36px;
+	
+}
+#name:first-letter {
+  text-transform: uppercase;
 }
 h2,h3 {
 	line-height:40px;
@@ -79,4 +83,7 @@ h4{
 .inactive{
 	border-color: gray;
 	color: gray;
+}
+textarea{
+	resize:vertical; 
 }

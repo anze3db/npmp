@@ -12,6 +12,8 @@ $(document).ready(function() {
     
     $('#modal').modal({backdrop: true, keyboard: true});
     
+    $('#input_reactions').keyup(updateReactions);
+    
     
     $('#drop-zone').bind('dragover', handleDragOver)
     			   .bind('drop', handleFileSelect)

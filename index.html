@@ -20,6 +20,21 @@
   </head>
 
   <body>
+  
+<script id="k_fields_source" type="text/x-jquery-tmpl">
+{{#if reactions.length > 0}}
+{{#each reactions}}
+<div class="clearfix">
+<label for="input_k{{=id}}">Koeficient k<sub>{{=id}}</sub></label>
+<div class="input">
+<input type="text" name="input_k{{=id}}" id="input_k{{=id}}" value="{{=value}}">
+<span class="help-inline">{{=description}}</span>
+</div>
+</div>
+{{/each}}
+{{/if}}    
+</script>
+  
 <!-- TODO: the template doesn't work with if you put src="path_to_file" :( -->
 <script id="m_source" type="text/x-jquery-tmpl">
 function [X_mean] = {{=name}}_ssa(t_end,t_step,runs,X_init,observ, plot_on)
@@ -55,34 +70,22 @@ V={{=input_v}}; % prostornina celice
 omega=A*V/(10^9);     % velikost; 10^9: ker so koeficienti k podani v enotah nM: 2. order nM; 3. order: nM^2; ...; n. order: nM^(n-1)
 
 % parametri
-k1 = 0.00012;       % vezava x na operator OR3
-k2 = 0.4791;        % cepitev x z opertorja OR2
-k3 = 0.0715;        % transkripcija mRNK proteina y
-k4 = 0.043;         % translacija proteina y
-k5 = 0.0039;        % razgradnja mRNK proteina y
-k6 = 0.0007;        % razgradnja proteina y
+{{#each k}}k{{=id}} = {{=value}};
+{{/each}}
 
-c1 = k1*2/(omega^2);  % vezava x na operator OR2
-c2 = k2;            % cepitev x z opertorja OR2
-c3 = k3;            % transkripcija mRNK proteina y
-c4 = k4;            % translacija proteina y
-c5 = k5;            % razgradnja mRNK proteina y
-c6 = k6;            % razgradnja proteina y
+{{#each k}}c{{=id}} = k{{=id}}; %  *2/(omega^2) ???
+{{/each}}
 
-c = [c1, c2, c3, c4, c5, c6];
+c = [{{#each k}}c{{=id}},{{/each}}];
 
 % -> define the reactions (i.e. the reactants and the products matrix)
-% X = [x, DNK, x2DNK, mRNK, y]
+% X = [x, DNK, x2_DNK, mRNK, y]
 
-r1 = [2, 1, 0, 0, 0]; p1 = [0, 0, 1, 0, 0];    % x + x + DNK -> x2_DNK
-r2 = [0, 0, 1, 0, 0]; p2 = [2, 1, 0, 0, 0];    % x2_DNK -> x + x  + DNK
-r3 = [0, 1, 0, 0, 0]; p3 = [0, 1, 0, 1, 0];    % DNK -> mRNK + DNK
-r4 = [0, 0, 0, 1, 0]; p4 = [0, 0, 0, 1, 1];    % mRNK -> mRNK + y
-r5 = [0, 0, 0, 1, 0]; p5 = [0, 0, 0, 0, 0];    % mRNK -> 0
-r6 = [0, 0, 0, 0, 1]; p6 = [0, 0, 0, 0, 0];    % y -> 0
-reactants = [r1;r2;r3;r4;r5;r6];
-products = [p1;p2;p3;p4;p5;p6];
+{{#each reactions}}
+r{{=id}} = {{=r}}; p{{=id}} = {{=p}};    % {{=line!}}{{/each}}
 
+reactants = [{{#each reactions}}r{{=id}};{{/each}}];
+products =  [{{#each reactions}}p{{=id}};{{/each}}];
 
 % initialization
 s = floor(t_end / t_step)+1; % no of max. recorded steps
@@ -139,24 +142,25 @@ end
           <div class="span10">
             <form id="form">
             <fieldset><legend>Opazovane kemijske zvrsti</legend></fieldset>
+            <div class="clearfix">
+            <label for="input_reactants">Zvrsti</label>
+            <div class="input">
+            <input class="xlarge" name="input_reactants" id="input_reactants">
+            <span class="help-inline">Ločene s presledkom</span>
+            </div>
+            </div>
             <fieldset><legend>Opazovane kemijske reakcije</legend></fieldset>
+            <div class="clearfix">
+            <label for="input_reactions">Reakcije</label>
+            <div class="input">
+            <textarea class="xlarge" name="input_reactions" id="input_reactions" rows="8"></textarea>
+            </div>
+            </div>
             <fieldset><legend>Hitrost kemijskih reakcij</legend></fieldset>
-            <div class="clearfix">
-            <label for="input_k1">K1</label>
-            <div class="input">
-            <input type="text" name="input_k1" id="input_k1">
-            <span class="help-inline">vezava x na operator OR3</span>
-            </div>
+            <div id="k_fields" class="clearfix">
+         
             </div>
             
-            
-            <div class="clearfix">
-            <label for="input_k2">K2</label>
-            <div class="input">
-            <input type="text" name="input_k2" id="input_k2">
-            <span class="help-inline">cepitev x z opertorja OR2</span>
-            </div>
-            </div>
             
             <fieldset><legend>Prostornina celice</legend></fieldset>
             <div class="clearfix">
