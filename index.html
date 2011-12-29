@@ -22,7 +22,7 @@
   <body>
 <!-- TODO: the template doesn't work with if you put src="path_to_file" :( -->
 <script id="m_source" type="text/x-jquery-tmpl">
-function [X_mean] = negator_ssa(t_end,t_step,runs,X_init,observ, plot_on)
+function [X_mean] = {{=name}}_ssa(t_end,t_step,runs,X_init,observ, plot_on)
 % Inputs:
 % t_end: end of the time interval [0, t_end] (period of simulation)
 % t_step: monitoring time step size;
@@ -36,7 +36,7 @@ function [X_mean] = negator_ssa(t_end,t_step,runs,X_init,observ, plot_on)
 
 %
 %   PRIMER KLICA:
-%   negator_ssa(10000,1,2,[0 1 0 0 0]',[5],1);
+%   {{=name}}_ssa(10000,1,2,[0 1 0 0 0]',[5],1);
 %   10000 sekund
 %   korak izrisovanja: 1 sekunda
 %   0 molekul x-a, 1 DNK
