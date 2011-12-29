@@ -42,23 +42,29 @@ function handleDragOver(e) {
 }
 
 function saveModel(e) {
-	data = {};
-	$("#form").find(':input').each(function(i, e) {
+	var data = getFormData();
 
-		data[e.name] = e.value;
-	});
-	data['name'] = $("#output-model").val();
-	console.log(data);
 	var str = JSON.stringify(data);
 	var bb = new BlobBuilder;
 	bb.append(str);
 	saveAs(bb.getBlob("text/plain;charset=utf-8"), $('#output-model').val() + '.json');
 }
 
+function getFormData(){
+	var data = {};
+	$("#form").find(':input').each(function(i, e) {
+
+		data[e.name] = e.value;
+	});
+	data['name'] = $("#output-model").val();
+	return data;
+}
+
 function generate() {
-	// TODO: Write a real file
+	
+	var source = $( "#m_source" ).render(getFormData());
 	var bb = new BlobBuilder;
-	bb.append("Hello, world!");
+	bb.append(source);
 	saveAs(bb.getBlob("text/plain;charset=utf-8"), $('#output-source').val() + '.m');
 }
 
@@ -95,7 +101,6 @@ function showModal(title, body, primary_callback) {
 }
 function updateForm(data) {
 	$('#form').find(':input').each(function(i, e) {
-
 		e.value = data[e.name];
 	});
 

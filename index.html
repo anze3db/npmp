@@ -20,7 +20,100 @@
   </head>
 
   <body>
+<!-- TODO: the template doesn't work with if you put src="path_to_file" :( -->
+<script id="m_source" type="text/x-jquery-tmpl">
+function [X_mean] = negator_ssa(t_end,t_step,runs,X_init,observ, plot_on)
+% Inputs:
+% t_end: end of the time interval [0, t_end] (period of simulation)
+% t_step: monitoring time step size;
+% the system state is stored at equidistant sample points
+% (k*t_step for k=0,1,2...)
+% runs: number of simulations
+% X_init: initial conditions; length(X_init)=number of species;
+% observ: matrix of species indices of x; the concentrations of those
+% species are plotted
+% plot_on: turn plotting on(1) or off(0)
 
+%
+%   PRIMER KLICA:
+%   negator_ssa(10000,1,2,[0 1 0 0 0]',[5],1);
+%   10000 sekund
+%   korak izrisovanja: 1 sekunda
+%   0 molekul x-a, 1 DNK
+%   izrisujemo potek y-a
+%   brez delaya
+%   izrisuj graf
+%   
+
+%   Vektor stanja sistema
+%   [x, DNK, x2_DNK, mRNK_y, y]   	
+
+disp('SSA - model% -> define the rate constant vector c
+
+A=6.0221415*10^23;
+V={{=input_v}}; % prostornina celice
+omega=A*V/(10^9);     % velikost; 10^9: ker so koeficienti k podani v enotah nM: 2. order nM; 3. order: nM^2; ...; n. order: nM^(n-1)
+
+% parametri
+k1 = 0.00012;       % vezava x na operator OR3
+k2 = 0.4791;        % cepitev x z opertorja OR2
+k3 = 0.0715;        % transkripcija mRNK proteina y
+k4 = 0.043;         % translacija proteina y
+k5 = 0.0039;        % razgradnja mRNK proteina y
+k6 = 0.0007;        % razgradnja proteina y
+
+c1 = k1*2/(omega^2);  % vezava x na operator OR2
+c2 = k2;            % cepitev x z opertorja OR2
+c3 = k3;            % transkripcija mRNK proteina y
+c4 = k4;            % translacija proteina y
+c5 = k5;            % razgradnja mRNK proteina y
+c6 = k6;            % razgradnja proteina y
+
+c = [c1, c2, c3, c4, c5, c6];
+
+% -> define the reactions (i.e. the reactants and the products matrix)
+% X = [x, DNK, x2DNK, mRNK, y]
+
+r1 = [2, 1, 0, 0, 0]; p1 = [0, 0, 1, 0, 0];    % x + x + DNK -> x2_DNK
+r2 = [0, 0, 1, 0, 0]; p2 = [2, 1, 0, 0, 0];    % x2_DNK -> x + x  + DNK
+r3 = [0, 1, 0, 0, 0]; p3 = [0, 1, 0, 1, 0];    % DNK -> mRNK + DNK
+r4 = [0, 0, 0, 1, 0]; p4 = [0, 0, 0, 1, 1];    % mRNK -> mRNK + y
+r5 = [0, 0, 0, 1, 0]; p5 = [0, 0, 0, 0, 0];    % mRNK -> 0
+r6 = [0, 0, 0, 0, 1]; p6 = [0, 0, 0, 0, 0];    % y -> 0
+reactants = [r1;r2;r3;r4;r5;r6];
+products = [p1;p2;p3;p4;p5;p6];
+
+
+% initialization
+s = floor(t_end / t_step)+1; % no of max. recorded steps
+t = 0:t_step:(s-1)*t_step; % sample points are predefined by the step_size
+X_total = zeros(runs,length(observ),s); % data storage for all observed species over all runs
+
+for k=1:runs
+    [X] = ssa(c,reactants,products,X_init,t_end,t_step);
+
+    for l=1:length(observ)
+        X_total(k,l,:)=X(observ(l),:);
+    end;
+end;
+
+X_mean = mean(X_total,1);
+X_means = squeeze(X_mean)';
+
+if (plot_on==1)
+
+    for l=1:length(observ)
+	      
+	%	print("neg.png");
+	figure(l);
+	clf;
+	plot(t, X_means(l,:));
+        xlabel('Cas [s]');
+        ylabel('Stevilo molekul proteina y');
+        box off;
+    end;
+end
+</script>
     <div class="topbar">
       <div class="fill">
         <div class="container">
@@ -49,27 +142,27 @@
             <fieldset><legend>Opazovane kemijske reakcije</legend></fieldset>
             <fieldset><legend>Hitrost kemijskih reakcij</legend></fieldset>
             <div class="clearfix">
-            <label for="input-v">K1</label>
+            <label for="input_k1">K1</label>
             <div class="input">
-            <input type="text" name="input-k1" id="input-v">
+            <input type="text" name="input_k1" id="input_k1">
             <span class="help-inline">vezava x na operator OR3</span>
             </div>
             </div>
             
             
             <div class="clearfix">
-            <label for="input-v">K2</label>
+            <label for="input_k2">K2</label>
             <div class="input">
-            <input type="text" name="input-k2" id="input-v">
+            <input type="text" name="input_k2" id="input_k2">
             <span class="help-inline">cepitev x z opertorja OR2</span>
             </div>
             </div>
             
             <fieldset><legend>Prostornina celice</legend></fieldset>
             <div class="clearfix">
-            <label for="input-v">Prostornina celice</label>
+            <label for="input_v">Prostornina celice</label>
             <div class="input">
-            <input type="text" name="input-v" id="input-v">
+            <input type="text" name="input_v" id="input_v">
             <span class="help-inline"></span>
             </div>
             </div>
@@ -121,6 +214,7 @@
 	<script type="text/javascript" src="js/lib/BlobBuilder.min.js"></script>
 	<script type="text/javascript" src="js/lib/bootstrap-alerts.js"></script>
 	<script type="text/javascript" src="js/lib/bootstrap-modal.js"></script>
+	<script type="text/javascript" src="js/lib/jsrender.js"></script>
 	<script type="text/javascript" src="js/lib/json2.js"></script>
 	<script type="text/javascript" src="js/functions.js"></script>
 	<script type="text/javascript" src="js/init.js"></script>
