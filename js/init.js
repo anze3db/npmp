@@ -6,6 +6,13 @@ $(document).ready(function() {
     
     $('#generate').click(generate);
     
+    $('#clear').click(clear);
+
+    $('.side-field').keyup(updateName);
+    
+    $('#modal').modal({backdrop: true, keyboard: true});
+    
+    
     $('#drop-zone').bind('dragover', handleDragOver)
     			   .bind('drop', handleFileSelect)
     			   .bind('dragleave', function(e){$(e.target).addClass('inactive');})

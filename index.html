@@ -40,11 +40,11 @@
 
       <div class="content">
         <div class="page-header">
-          <h1>Nastavitve</h1>
+          <h1 id="name"></h1>
         </div>
         <div class="row">
           <div class="span10">
-            <form>
+            <form id="form">
             <fieldset><legend>Opazovane kemijske zvrsti</legend></fieldset>
             <fieldset><legend>Opazovane kemijske reakcije</legend></fieldset>
             <fieldset><legend>Hitrost kemijskih reakcij</legend></fieldset>
@@ -91,6 +91,7 @@
 			<p></p>
 			</div>
 			<output id="list"></output>
+			<input type="submit" class="btn danger" value="Počisti" id="clear" >
           </div>
         </div>
       </div>
@@ -98,8 +99,21 @@
       <footer>
 
       </footer>
-
-    </div> <!-- /container -->
+<!-- Le modal dialog -->
+<div id="modal" class="modal hide fade in">
+            <div class="modal-header">
+              <a href="#" class="close">×</a>
+              <h3>Le Heading</h3>
+            </div>
+            <div class="modal-body">
+              <p>Le one fine body…</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn primary">Vredu</a>
+              <a href="#" class="btn secondary">Prekliči</a>
+            </div>
+</div>
+</div> <!-- /container -->
     <!-- Le javascript -->
 	<script type="text/javascript" src="js/lib/jquery-1.7.min.js"></script>
 	<script type="text/javascript" src="js/lib/chosen/chosen/chosen.jquery.min.js"></script>
@@ -107,6 +121,7 @@
 	<script type="text/javascript" src="js/lib/FileSaver.min.js"></script>
 	<script type="text/javascript" src="js/lib/BlobBuilder.min.js"></script>
 	<script type="text/javascript" src="js/lib/bootstrap-alerts.js"></script>
+	<script type="text/javascript" src="js/lib/bootstrap-modal.js"></script>
 	<script type="text/javascript" src="js/lib/json2.js"></script>
 	<script type="text/javascript" src="js/functions.js"></script>
 	<script type="text/javascript" src="js/init.js"></script>

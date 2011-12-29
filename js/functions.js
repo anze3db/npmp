@@ -16,7 +16,9 @@ function handleFileSelect(e) {
       reader.onloadend = function(evt) {
         if (evt.target.readyState == FileReader.DONE) { // DONE == 2
 			try {
-				data = JSON.parse(evt.target.result);			
+				data = JSON.parse(evt.target.result);
+
+
 			} catch (e) {
 				$(".alert-message").find('p').html(e.toString());
 				$(".alert-message").show();
@@ -28,7 +30,9 @@ function handleFileSelect(e) {
     	  $(".alert-message").find('p').html("<strong>Napaka</strong> pri branju datoteke (index.html mora biti odprt preko http:// in ne file://)");
     	  $(".alert-message").show();
       };
-      
+		var name = f.name.substring(0,f.name.lastIndexOf('.'));
+		$('#name').text(name);
+		$('.side-field').not(this).val(name);
       reader.readAsText(f);
       
       
@@ -58,4 +62,36 @@ function generate(){
 	var bb = new BlobBuilder;
 	bb.append("Hello, world!");
 	saveAs(bb.getBlob("text/plain;charset=utf-8"), $('#output-source').val() + '.m');
+}
+
+
+function updateName(e){
+	$('#name').text(this.value);
+	$('.side-field').not(this).val(this.value);
+}
+
+function clear(){
+	
+	showModal('Opozorilo', 'S tem boste izbrisali neshranjene podatke.', clearForm);
+}
+
+function clearForm(){
+	$('#form').each (function() { this.reset(); });
+	$('#name').text("");
+	$('.side-field').not(this).val("");	
+}
+
+function showModal(title, body, primary_callback){
+	
+	$($('#modal').find('.modal-header').find('h3')[0]).text(title);
+	$($('#modal').find('.modal-body').find('p')[0]).text(body);
+	$($('#modal').find('.modal-footer').children()[0]).unbind().click(function(){
+		$('#modal').modal('hide');
+		primary_callback();
+	});
+	$($('#modal').find('.modal-footer').children()[1]).unbind().click(function(){
+		$('#modal').modal('hide');
+	});
+
+	$('#modal').modal('toggle');
 }
