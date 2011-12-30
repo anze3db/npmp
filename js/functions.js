@@ -52,7 +52,6 @@ function getFormData() {
 	$("#form").find(':input').each(function(i, e) {
 		data[e.name] = e.value;
 	});
-	console.log(data);
 	data['name'] = $("#output-model").val();
 	return data;
 }
@@ -62,14 +61,35 @@ function generate() {
 	// Transform the data as needed in the .m file:
 	var gData = {};
 	gData.input_v = data.input_v;
-
+	gData.name = data.name;
 	gData.k = [];
 	var cnt = 1;
 	for ( var i in data) {
 		if (i.indexOf('input_k') == 0) { // index starts with input_k
+			
+		
+			var totalR = 0, totalP = 0, n2 = 0, I = 1;
+			var c = "";
+			var re = gData.reactions[cnt - 1].r, pe = gData.reactions[cnt - 1].p;
+			for ( var j in re) {
+				totalR += re[j];
+				totalP += pe[j];
+				if (re[j] > 0) {
+					n2 += re[j] - pe[j];
+					I *= factorial(re[j] - pe[j]);
+				}
+			}
+
+			$.each(gData.reactions[cnt - 1].r, function(i, v) {
+			});
+			if (I > 1)
+				c += "*"+I;
+			if (n2 > 1)
+				c += "/(omega^"+(n2-1)+")";
 			gData.k.push({
 				id : cnt++,
-				value : data[i]
+				value : data[i],
+				c : c
 			});
 		} else if (i == 'input_reactions') {
 			gData.reactions = parseReactions(data[i]);
@@ -81,7 +101,14 @@ function generate() {
 	bb.append(source);
 	saveAs(bb.getBlob("text/plain;charset=utf-8"), $('#output-source').val() + '.m');
 }
-
+function factorial(n) {
+	if ((n == 0) || (n == 1))
+		return 1
+	else {
+		var result = (n * factorial(n - 1));
+		return result
+	}
+}
 function parseReactions(reactions) {
 
 	var res = [];
@@ -114,16 +141,27 @@ function parseReactionsLine(r, reactants) {
 	r = r.split('+');
 	// Count the number of occurrences:
 	for ( var j in r) {
-		// TODO: Handle x(y)
-		counters[r[j]]++;
+		// Handle x(y)
+		var inc = 1;
+		var regex = /(.*?)\((.*?)\)/g;
+		var match = regex.exec(r[j]);
+		if(match){
+			inc = parseInt(match[1]);
+			r[j] = match[2];
+		}
+		counters[r[j]]+= inc;
 	}
 
-	var str = "[";
+	var ret = [];
 	for ( var j in reactants) {
-		str += counters[reactants[j]] + ",";
+		ret.push(counters[reactants[j]]);
 	}
-	str += "]";
-	return str;
+	// var str = "[";
+	// for ( var j in reactants) {
+	// str += counters[reactants[j]] + ",";
+	// }
+	// str += "]";
+	return ret;
 }
 
 function updateName(e) {
@@ -180,7 +218,7 @@ function updateReactions() {
 	// TODO: k fields tend to get mixed up when removing a middle reaction, fix
 	// it.
 	for ( var i in r) {
-		console.log("#input_k" + parseInt(i) + 1);
+
 		var value = $("#input_k" + (parseInt(i) + 1)).val() || "";
 		reactions.push({
 			id : parseInt(i) + 1,
@@ -193,4 +231,8 @@ function updateReactions() {
 	});
 	$("#k_fields").html(html);
 
+}
+
+function loadExample(e){
+	updateForm(examples[$(this).text()])
 }

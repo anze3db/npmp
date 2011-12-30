@@ -36,8 +36,7 @@
 </script>
   
 <!-- TODO: the template doesn't work with if you put src="path_to_file" :( -->
-<script id="m_source" type="text/x-jquery-tmpl">
-function [X_mean] = {{=name}}_ssa(t_end,t_step,runs,X_init,observ, plot_on)
+<script id="m_source" type="text/x-jquery-tmpl">function [X_mean] = {{=name}}(t_end,t_step,runs,X_init,observ, plot_on)
 % Inputs:
 % t_end: end of the time interval [0, t_end] (period of simulation)
 % t_step: monitoring time step size;
@@ -51,7 +50,7 @@ function [X_mean] = {{=name}}_ssa(t_end,t_step,runs,X_init,observ, plot_on)
 
 %
 %   PRIMER KLICA:
-%   {{=name}}_ssa(10000,1,2,[0 1 0 0 0]',[5],1);
+%   {{=name}}(10000,1,2,[0 1 0 0 0]',[5],1);
 %   10000 sekund
 %   korak izrisovanja: 1 sekunda
 %   0 molekul x-a, 1 DNK
@@ -63,7 +62,7 @@ function [X_mean] = {{=name}}_ssa(t_end,t_step,runs,X_init,observ, plot_on)
 %   Vektor stanja sistema
 %   [x, DNK, x2_DNK, mRNK_y, y]   	
 
-disp('SSA - model% -> define the rate constant vector c
+disp('SSA - modeliranje bioloskega gonilnika');
 
 A=6.0221415*10^23;
 V={{=input_v}}; % prostornina celice
@@ -73,7 +72,7 @@ omega=A*V/(10^9);     % velikost; 10^9: ker so koeficienti k podani v enotah nM:
 {{#each k}}k{{=id}} = {{=value}};
 {{/each}}
 
-{{#each k}}c{{=id}} = k{{=id}}; %  *2/(omega^2) ???
+{{#each k}}c{{=id}} = k{{=id}}{{=c}}; 
 {{/each}}
 
 c = [{{#each k}}c{{=id}},{{/each}}];
@@ -82,7 +81,7 @@ c = [{{#each k}}c{{=id}},{{/each}}];
 % X = [x, DNK, x2_DNK, mRNK, y]
 
 {{#each reactions}}
-r{{=id}} = {{=r}}; p{{=id}} = {{=p}};    % {{=line!}}{{/each}}
+r{{=id}} = [{{=r}}]; p{{=id}} = [{{=p}}];    % {{=line!}}{{/each}}
 
 reactants = [{{#each reactions}}r{{=id}};{{/each}}];
 products =  [{{#each reactions}}p{{=id}};{{/each}}];
@@ -187,6 +186,13 @@ end
 			<a class="close" href="#">×</a>
 			<p></p>
 			</div>
+			<h3>Predpripravljeni primeri</h3>
+			<ul>
+			<li><a class="examples" href="#">and_ssa</a></li>
+			<li><a class="examples" href="#">driver_ssa</a></li>
+			<li><a class="examples" href="#">negator_ssa</a></li>
+			<li><a class="examples" href="#">nor_ssa</a></li>
+			</ul>
 			<input type="submit" class="btn danger" value="Počisti" id="clear" >
           </div>
         </div>
