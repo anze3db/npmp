@@ -177,6 +177,7 @@ function clear() {
 function clearForm() {
 	$('#form').each(function() {
 		this.reset();
+		updateReactions();
 	});
 	$('#name').text("");
 	$('.side-field').not(this).val("");
